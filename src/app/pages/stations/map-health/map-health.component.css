@@ -1,0 +1,22 @@
+#map{
+    height:550px;
+    width: 100%;
+}
+.btn-25{
+    width:25px;
+    height:25px;
+}
+
+.btn-outline-primary,.btn-outline-danger,
+.btn-outline-dark,.btn-outline-primary,
+.btn-outline-warning:hover {
+    background-color: #fff !important;
+    text-decoration: none;
+}
+
+.update-count {
+    font-size: 10px;
+    text-align: center;
+    vertical-align: middle;
+}
+

@@ -1,0 +1,66 @@
+
+<div class="col p-2">
+    <div class="card">
+        <div class="card-header p-2">
+            <div class="row">
+                <div class="col-md-10">
+                    <h5><i class="fa fa-home mr-1"></i>Stations List</h5>
+                </div>
+                <div class="col-md-2">
+                    
+                    <a class="btn btn-success float-right" href="/station/add" role="button">
+                        <i class="fa fa-plus-square mr-2" title="Add"></i>Add Station
+                    </a>
+                </div>
+            </div>
+                
+        </div>
+            
+        <div class="card-body">
+            <table datatable class="table table-hover table-striped table-bordered" id="stationList" >
+                <thead>
+                    <tr>
+                    <th>ID</th>
+                    <th>Code</th>
+                    <th>Name</th>
+                    <th>MAC</th>
+                    <th>Latitude</th>
+                    <th>Longitude</th>
+                    <th>Location</th>
+                    <th>Date Installed</th>
+                    <th class="text-center">Action</th>
+                    </tr>
+                </thead>
+                <tbody *ngIf="stations?.length != 0">
+                    <tr *ngFor="let station of stations;let i = index">
+                        <td>{{ station.id }}</td>
+                        <td>{{ station.code }}</td>
+                        <td>{{ station.name }}</td>
+                        <td>{{ station.mac }}</td>
+                        <td>{{ station.latitude }}</td>
+                        <td>{{ station.longitude }}</td>
+                        <td>{{ station.location }}</td>
+                        <td>{{ station.date_installed }}</td>
+                        <td class="text-center">
+                            <a class="btn btn-primary btn-sm" href = "/station/edit/{{ station.id }}" role="button">
+                                <i class="fa fa-edit" title="Edit"></i>
+                            </a>
+                            &nbsp;
+                            <button class="btn btn-danger btn-sm  btn-delete" (click)="deleteStation(i)">
+                                <i class="fa fa-trash" title="Delete"></i>
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+                <tbody *ngIf="stations?.length == 0">
+                    <tr>
+                    <td colspan="9" class="no-data-available">No data!</td>
+                    </tr>
+                <tbody>
+            </table>
+        </div>
+              
+    </div>
+            
+</div>
+
