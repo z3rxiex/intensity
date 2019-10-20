@@ -14,9 +14,6 @@
         </div>
             
         <div class="card-body" >
-            <div *ngIf="form.invalid && errMsg !== ''" class="alert alert-danger ml-2 mr-1 mt-1 row">
-                <span [innerHTML]="errMsg"></span>
-            </div>
             <form [formGroup]="form">
                 <div class="form-group row m-1">
                     <label for="code" class="col-sm-2  control-label">Station Code</label>
@@ -25,10 +22,14 @@
                             :&nbsp;
                             <input type="text" autocomplete="off" id="code" name="code"  style="font-weight: bold" 
                             formControlName = "code"
-                            maxlength="4"
-                            class="form-control form-control-sm form-control-sm">
+                             class="form-control form-control-sm form-control-sm">
+                            
+                            
                         </div>
-                      </div>
+                        <div *ngIf="code.touched && !code.valid" class="alert alert-danger ml-2 mr-1 mt-1 row" style="width:250px">
+                            <span *ngIf="code.errors.required">Station Code is required</span>
+                        </div>
+                    </div>
                 
                 </div>
                 <div class="form-group  row m-1">
@@ -37,8 +38,10 @@
                         <div class="input-group">
                             :&nbsp;<input type="text" autocomplete="off" id="name" name="name" 
                             formControlName = "name"
-                            required maxlength="50"
                             class="form-control form-control-sm">
+                        </div>
+                        <div *ngIf="name.touched && !name.valid" class="alert alert-danger ml-2 mr-1 mt-1 row" style="width:250px">
+                            <span *ngIf="name.errors.required">Station Name is required</span>
                         </div>
                     </div>
                 </div>
@@ -47,31 +50,38 @@
                     <div class="col-sm-4">
                         <div class="input-group">
                             :&nbsp;<input type="text" autocomplete="off" id="mac" name="mac" 
-                            formControlName = "mac"
-                            maxlength="17"
-                            class="form-control form-control-sm">
+                            required maxlength="17"
+                            [(ngModel)]="station.mac" #mac="ngModel" class="form-control form-control-sm">
                         </div>
-                        
+                        <div *ngIf="mac.touched && !mac.valid" class="alert alert-danger ml-2 mr-1 mt-1 row" style="width:250px">
+                            <span *ngIf="mac.errors.required">MAC Address is required</span>
+                        </div>
                     </div>
                 </div>
                 <div class="form-group  row m-1">
                     <label for="location" class="col-sm-2  control-label">Location</label>
                     <div class="col-sm-4">
                         <div class="input-group">
-                            :&nbsp;<input type="text" autocomplete="off" id="location" name="location" 
-                            formControlName = "location"
-                            maxlength="50"
-                            class="form-control form-control-sm">
+                            :&nbsp;<input type="textarea" autocomplete="off" id="location" name="location" 
+                            required maxlength="50"
+                            [(ngModel)]="station.location" #location="ngModel" class="form-control form-control-sm">
+                        </div>
+                        <div *ngIf="location.touched && !location.valid" class="alert alert-danger ml-2 mr-1 mt-1 row" style="width:250px">
+                            <span *ngIf="location.errors.required">Location is required</span>
                         </div>
                     </div>
+
                 </div>
                 <div class="form-group  row m-1">
                     <label for="latitude" class="col-sm-2  control-label">Latitude</label>
                     <div class="col-sm-4">
                         <div class="input-group">
                             :&nbsp;<input type="number" autocomplete="off" id="latitude" name="latitude" 
-                            formControlName = "latitude"
-                            class="form-control form-control-sm">
+                            required
+                            [(ngModel)]="station.latitude" #latitude="ngModel" class="form-control form-control-sm">
+                        </div>
+                        <div *ngIf="latitude.touched && !latitude.valid" class="alert alert-danger ml-2 mr-1 mt-1 row" style="width:250px">
+                            <span *ngIf="latitude.errors.required">Latitude is required</span>
                         </div>
                     </div>
                 </div>
@@ -80,8 +90,11 @@
                     <div class="col-sm-4">
                         <div class="input-group">
                             :&nbsp;<input type="number" autocomplete="off" id="longitude" name="longitude" 
-                            formControlName = "longitude"
-                            class="form-control form-control-sm">
+                            required
+                            [(ngModel)]="station.longitude" #longitude="ngModel" class="form-control form-control-sm">
+                        </div>
+                        <div *ngIf="longitude.touched && !longitude.valid" class="alert alert-danger ml-2 mr-1 mt-1 row" style="width:250px">
+                            <span *ngIf="longitude.errors.required">Longitude is required</span>
                         </div>
                     </div>
                 </div>
@@ -90,8 +103,11 @@
                     <div class="col-sm-4">
                         <div class="input-group">
                             :&nbsp;<input type="number" autocomplete="off" id="elevation" name="elevation" 
-                            formControlName = "elevation"
-                            class="form-control form-control-sm">
+                            required maxlength="5"
+                            [(ngModel)]="station.elevation" #elevation="ngModel" class="form-control form-control-sm">
+                        </div>
+                        <div *ngIf="elevation.touched && !elevation.valid" class="alert alert-danger ml-2 mr-1 mt-1 row" style="width:250px">
+                            <span *ngIf="elevation.errors.required">Elevation is required</span>
                         </div>
                     </div>
                 </div>
@@ -100,9 +116,12 @@
                     <div class="col-sm-2">
                         <div class="input-group">
                             :&nbsp;<input type="date" autocomplete="off" class="form-control form-control-sm" id="inputDate" name="inputDate"
-                            formControlName = "dateinstalled"  
-                            >
-                        </div>     
+                            required  
+                            [(ngModel)] = "station.date_installed" #inputDate="ngModel">
+                        </div>
+                        <div *ngIf="inputDate.touched && !inputDate.valid" class="alert alert-danger ml-2 mr-1 mt-1 row" style="width:250px">
+                            <span *ngIf="inputDate.errors.required">Date Installed is required</span>
+                        </div>
                     </div>
                 </div>
             </form>

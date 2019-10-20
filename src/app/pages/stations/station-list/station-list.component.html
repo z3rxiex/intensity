@@ -8,7 +8,7 @@
                 </div>
                 <div class="col-md-2">
                     
-                    <a class="btn btn-success float-right" href="/station/add" role="button">
+                    <a class="btn btn-success float-right" routerLink="/station/add" role="button">
                         <i class="fa fa-plus-square mr-2" title="Add"></i>Add Station
                     </a>
                 </div>
@@ -17,7 +17,7 @@
         </div>
             
         <div class="card-body">
-            <table datatable class="table table-hover table-striped table-bordered" id="stationList" >
+            <table datatable class="table table-hover table-striped table-bordered" [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" id="stationList" >
                 <thead>
                     <tr>
                     <th>ID</th>
@@ -27,6 +27,7 @@
                     <th>Latitude</th>
                     <th>Longitude</th>
                     <th>Location</th>
+                    <th>Gewog</th>
                     <th>Date Installed</th>
                     <th class="text-center">Action</th>
                     </tr>
@@ -40,9 +41,10 @@
                         <td>{{ station.latitude }}</td>
                         <td>{{ station.longitude }}</td>
                         <td>{{ station.location }}</td>
+                        <td>{{ station.gewog }}</td>
                         <td>{{ station.date_installed }}</td>
                         <td class="text-center">
-                            <a class="btn btn-primary btn-sm" href = "/station/edit/{{ station.id }}" role="button">
+                            <a class="btn btn-primary btn-sm" [routerLink] = "['/station/edit', station.id]" role="button">
                                 <i class="fa fa-edit" title="Edit"></i>
                             </a>
                             &nbsp;

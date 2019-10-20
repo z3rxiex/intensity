@@ -6,9 +6,6 @@ declare var $: any;  // Declaring $ as a variable so that we can use it to acces
 
 declare let L;
 
-
-
-
 const DefaultIcon = L.icon({
   iconUrl: './assets/img/leaflet/marker-icon.png'
 });
@@ -75,7 +72,7 @@ export class MapHealthComponent implements OnInit {
     };
 
     this.map = L.map('map', {
-      layers: [osm]
+      layers: [googleTer]
     }).setView([-41.2858, 174.78682], 14);
 
     L.control.layers(baselayers).addTo(this.map);
@@ -174,9 +171,7 @@ export class MapHealthComponent implements OnInit {
       }
 
     }
-
     return this.stationsData[index][colHr];
-   // return curr_hr;
   }
 
   getBtnStatus(index: number, hr: number) {
@@ -224,9 +219,6 @@ export class MapHealthComponent implements OnInit {
     let stationStat;
     const currHr: number = new Date().getHours();
 
-
-    // console.log(updateCount);
-
     switch (true) {
       // tslint:disable-next-line: triple-equals
       case updateCount == intPercentage.intRed:
@@ -256,7 +248,6 @@ export class MapHealthComponent implements OnInit {
 
     const colUpdate = 'UpdateCount' + hr.toString();
     const colHr = 'HR' + hr.toString() + '_status';
-    // console.log(this.stationsData);
 
     return  (this.stationsData[index][colHr] === 2 ? '' : this.stationsData[index][colUpdate]) ;
   }
@@ -266,7 +257,6 @@ export class MapHealthComponent implements OnInit {
     const currDate = new Date();
 
     this.SelectedDate = new Date(newDate[0].toString() + '-' + newDate[1].toString() + '-' + newDate[2].toString());
-    // console.log(this.SelectedDate);
 
     this.currYear = this.SelectedDate.getFullYear();
     this.currMonth = (this.SelectedDate.getMonth() + 1);
@@ -349,11 +339,10 @@ export class MapHealthComponent implements OnInit {
 
             });
 
-            console.log('refresh');
         }
       );
 
-    }, 5000);
+    }, 60000);
   }
 
   onTest() {

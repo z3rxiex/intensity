@@ -126,23 +126,6 @@ END
 $$
 DELIMITER ;
 
--- --------------------------------------------------------
-
---
--- Table structure for table `intensity_log`
---
-
-CREATE TABLE `intensity_log` (
-  `id` int(11) NOT NULL,
-  `YYYYMMDD` date NOT NULL,
-  `HHMMSS` time NOT NULL,
-  `MAC` text NOT NULL,
-  `MMI` decimal(5,1) NOT NULL,
-  `PGA` decimal(5,1) NOT NULL,
-  `PGV` decimal(5,1) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
--- --------------------------------------------------------
 
 --
 -- Table structure for table `intensity_main`
@@ -184,40 +167,11 @@ CREATE TABLE `intensity_main` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `intstations`
---
-
-CREATE TABLE `intstations` (
-  `id` int(11) NOT NULL,
-  `StnCode` varchar(4) NOT NULL,
-  `StnName` varchar(50) NOT NULL,
-  `MAC` varchar(17) NOT NULL,
-  `Latitude` decimal(6,4) NOT NULL,
-  `Longitude` decimal(7,4) NOT NULL,
-  `Elevation` int(5) NOT NULL,
-  `Dzongkhag` varchar(50) NOT NULL,
-  `Gewog` varchar(50) NOT NULL,
-  `Village` varchar(50) NOT NULL,
-  `BldgName` varchar(50) NOT NULL,
-  `DateInstalled` date NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Indexes for dumped tables
---
-
---
 -- Indexes for table `intensity_data`
 --
 ALTER TABLE `intensity_data`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `hr_MAC_LogDate` (`hr`,`MAC`,`LogDate`);
-
---
--- Indexes for table `intensity_log`
---
-ALTER TABLE `intensity_log`
-  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `intensity_main`
@@ -226,11 +180,6 @@ ALTER TABLE `intensity_main`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `MAC_LogDate` (`MAC`,`LogDate`) USING BTREE;
 
---
--- Indexes for table `intstations`
---
-ALTER TABLE `intstations`
-  ADD PRIMARY KEY (`id`);
 
 --
 -- AUTO_INCREMENT for dumped tables
@@ -243,22 +192,12 @@ ALTER TABLE `intensity_data`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `intensity_log`
---
-ALTER TABLE `intensity_log`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
---
 -- AUTO_INCREMENT for table `intensity_main`
 --
 ALTER TABLE `intensity_main`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
---
--- AUTO_INCREMENT for table `intstations`
---
-ALTER TABLE `intstations`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

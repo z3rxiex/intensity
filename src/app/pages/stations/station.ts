@@ -4,6 +4,7 @@ export class _Station{
     name: string;
     mac: string;
     location: string;
+    gewog: string;
     latitude: number;
     longitude: number;
     elevation: number;

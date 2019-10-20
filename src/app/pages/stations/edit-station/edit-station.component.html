@@ -7,7 +7,7 @@
                     <h5><i class="fa fa-home mr-1"></i>Edit Station</h5>
                 </div>
                 <div class="col-md-2">
-                    <a class="btn btn-success float-right" href="/stations" role="button">
+                    <a class="btn btn-success float-right" routerLink="/stations" role="button">
                         <i class="fa fa-list-alt" title="Back to Stations List"></i>
                     </a>
                 </div>
@@ -15,72 +15,106 @@
         </div>
             
         <div class="card-body" >
-            <div class="form-group row m-1">
-                <label for="code" class="col-sm-2  control-label">Station Code</label>
-                <div class="col-sm-2">
-                    <div class="input-group">
-                         :&nbsp;<input type="text" readonly id="name" name="name"  style='font-weight: bold' [(ngModel)]="station[0].code" class="form-control form-control-sm form-control-sm text-wei">
-                    </div>
-                </div>
+            <div *ngIf="form.invalid && errMsg !== ''" class="alert alert-danger ml-2 mr-1 mt-1 row">
+                <span [innerHTML]="errMsg"></span>
             </div>
-            <div class="form-group  row m-1">
-                <label for="name" class="col-sm-2  control-label">Station Name</label>
-                <div class="col-sm-4">
-                    <div class="input-group">
-                        :&nbsp;<input type="text" id="name" name="name" [(ngModel)]="station[0].name" class="form-control form-control-sm">
+            <form [formGroup]="form">
+                <div class="form-group row m-1">
+                    <label for="code" class="col-sm-2  control-label">Station Code</label>
+                    <div class="col-sm-2">
+                        <div class="input-group">
+                            :&nbsp;<input type="text" readonly id="name" name="name"  style='font-weight: bold' 
+                            formControlName = "code"
+                            class="form-control form-control-sm form-control-sm">
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="form-group  row m-1">
-                <label for="mac" class="col-sm-2  control-label">MAC Address</label>
-                <div class="col-sm-4">
-                    <div class="input-group">
-                        :&nbsp;<input type="text" id="mac" name="mac" [(ngModel)]="station[0].mac" class="form-control form-control-sm">
+                <div class="form-group  row m-1">
+                    <label for="name" class="col-sm-2  control-label">Station Name</label>
+                    <div class="col-sm-4">
+                        <div class="input-group">
+                            :&nbsp;<input type="text" id="name" name="name" 
+                            formControlName = "name"
+                            required maxlength="50"
+                            class="form-control form-control-sm">
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="form-group  row m-1">
-                <label for="location" class="col-sm-2  control-label">Location</label>
-                <div class="col-sm-4">
-                    <div class="input-group">
-                        :&nbsp;<input type="textarea" id="location" name="location" [(ngModel)]="station[0].location" class="form-control form-control-sm">
+                <div class="form-group  row m-1">
+                    <label for="mac" class="col-sm-2  control-label">MAC Address</label>
+                    <div class="col-sm-4">
+                        <div class="input-group">
+                            :&nbsp;<input type="text" id="mac" name="mac" 
+                            formControlName = "mac"
+                            maxlength="17"
+                            class="form-control form-control-sm">
+                        </div>
                     </div>
                 </div>
+                <div class="form-group  row m-1">
+                    <label for="location" class="col-sm-2  control-label">Location</label>
+                    <div class="col-sm-4">
+                        <div class="input-group">
+                            :&nbsp;<input type="text" id="location" name="location" 
+                            formControlName = "location"
+                            maxlength="50"
+                            class="form-control form-control-sm">
+                        </div>
+                    </div>
 
-            </div>
-            <div class="form-group  row m-1">
-                <label for="latitude" class="col-sm-2  control-label">Latitude</label>
-                <div class="col-sm-4">
-                    <div class="input-group">
-                        :&nbsp;<input type="text" id="latitude" name="latitude" [(ngModel)]="station[0].latitude" class="form-control form-control-sm">
+                </div>
+                <div class="form-group  row m-1">
+                    <label for="gewog" class="col-sm-2  control-label">Gewog</label>
+                    <div class="col-sm-4">
+                        <div class="input-group">
+                            :&nbsp;<input type="text" id="gewog" name="gewog"
+                            formControlName = "gewog"
+                            class="form-control form-control-sm">
+                        </div>
+                    </div>
+
+                </div>
+                <div class="form-group  row m-1">
+                    <label for="latitude" class="col-sm-2  control-label">Latitude</label>
+                    <div class="col-sm-4">
+                        <div class="input-group">
+                            :&nbsp;<input type="number" id="latitude" name="latitude"
+                            formControlName = "latitude"
+                            class="form-control form-control-sm">
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="form-group  row m-1">
-                <label for="longitude" class="col-sm-2  control-label">Longitude</label>
-                <div class="col-sm-4">
-                    <div class="input-group">
-                        :&nbsp;<input type="text" id="longitude" name="longitude" [(ngModel)]="station[0].longitude" class="form-control form-control-sm">
+                <div class="form-group  row m-1">
+                    <label for="longitude" class="col-sm-2  control-label">Longitude</label>
+                    <div class="col-sm-4">
+                        <div class="input-group">
+                            :&nbsp;<input type="number" id="longitude" name="longitude"
+                            formControlName = "longitude"
+                            class="form-control form-control-sm">
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="form-group  row m-1">
-                <label for="elevation" class="col-sm-2  control-label">Elevation</label>
-                <div class="col-sm-4">
-                    <div class="input-group">
-                        :&nbsp;<input type="text" id="elevation" name="elevation" [(ngModel)]="station[0].elevation" class="form-control form-control-sm">
+                <div class="form-group  row m-1">
+                    <label for="elevation" class="col-sm-2  control-label">Elevation</label>
+                    <div class="col-sm-4">
+                        <div class="input-group">
+                            :&nbsp;<input type="number" id="elevation" name="elevation" 
+                            formControlName = "elevation"
+                            class="form-control form-control-sm">
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="form-group  row m-1">
-                <label for="inputDate" class="col-sm-2  control-label">Date Installed</label>
-                <div class="col-sm-2">
-                    <div class="input-group">
-                        :&nbsp;<input type="text" class="form-control form-control-sm" id="inputDate" name="inputDate" [(ngModel)] = "station[0].date_installed" 
-                            #inputDate (click)="dateSelected(inputDate.value)">
+                <div class="form-group  row m-1">
+                    <label for="inputDate" class="col-sm-2  control-label">Date Installed</label>
+                    <div class="col-sm-2">
+                        <div class="input-group">
+                            :&nbsp;<input type="date" class="form-control form-control-sm" id="inputDate" name="inputDate" 
+                            formControlName = "dateinstalled"  
+                            >
+                        </div>
                     </div>
                 </div>
-            </div>
+            </form>
         </div>
 
         <div class="card-footer">
