@@ -20,3 +20,7 @@
     vertical-align: middle;
 }
 
+.vl {
+    border-left: 1px solid green;
+    height: 1px;
+  }

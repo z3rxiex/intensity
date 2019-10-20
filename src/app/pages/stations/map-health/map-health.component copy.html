@@ -8,10 +8,10 @@
                     <div id="map" style="z-index: 1;"></div>
                     <div class="row d-flex justify-content-center mt-3 p-3 border rounded">
                         <form>
-                            <div class="form-group row d-none">
+                            <div class="form-group row">
                               <label for="inputShow" class="col-sm-4 col-form-label">Show Type: </label>
                               <div class="col-sm-8">
-                                <select class="form-control" id="inputShow">
+                                <select class="form-control" id="inputShow" id="showOpt" name="showOpt" [(ngModel)]="showOpt">
                                     <option value="daily" selected>Daily</option>
                                     <option value="monthly">Monthly</option>
                                 </select>

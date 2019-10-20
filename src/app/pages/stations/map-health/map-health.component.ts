@@ -139,10 +139,6 @@ export class MapHealthComponent implements OnInit {
     return colStr;
   }
 
-  getName() {
-    // return this.selectedDate.getFullYear();
-  }
-
   getStatus(index: number, hr: number) {
     /*return 0 - with data
              1 - no Data
@@ -301,7 +297,6 @@ export class MapHealthComponent implements OnInit {
 
   updateFormateDate(newDate: any) {
     this.NewSelectedDate = newDate;
-    // console.log(this.NewSelectedDate);
   }
 
   startAutoRefreshData() {
@@ -312,8 +307,6 @@ export class MapHealthComponent implements OnInit {
       this.stationService.getStationsHrData()
         .subscribe(response => {
             this.stationsHrData = response;
-            // console.log(this.stationsHrData);
-            // console.log(this.stationsData);
 
             // Update stations marker content
             this.stationsHrData.forEach((station, index) => {
@@ -342,7 +335,7 @@ export class MapHealthComponent implements OnInit {
         }
       );
 
-    }, 60000);
+    }, 5000);
   }
 
   onTest() {
