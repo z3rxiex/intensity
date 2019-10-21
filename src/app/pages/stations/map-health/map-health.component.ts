@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { StationsService } from 'src/app/services/stations.service';
 import { btnStatus, stationMarkerStatus, intPercentage } from 'src/app/templates/default';
+import * as moment from 'moment-timezone';
+
 
 declare var $: any;  // Declaring $ as a variable so that we can use it to access jQuery
 
@@ -34,6 +36,8 @@ export class MapHealthComponent implements OnInit {
   private intervalId: any;
   private CurrentState = false;
 
+  private MJS = moment(); // creating obj.
+
 
   // Public
   stationsData: any;
@@ -44,7 +48,6 @@ export class MapHealthComponent implements OnInit {
   constructor(private stationService: StationsService) { }
 
   ngOnInit() {
-
     /* Initilize Map */
 
     // Base Maps
@@ -82,7 +85,7 @@ export class MapHealthComponent implements OnInit {
           this.stationsData = response;
           this.CurrentState = true;
 
-          const colUpdate = 'UpdateCount' + this.SelectedDate.getHours().toString();
+          const colUpdate = 'UpdateCount' + this.MJS.tz('Asia/Thimphu').format('H').toString();
 
           // Load Station Marker
           this.stationsData.forEach(station => {
@@ -152,7 +155,7 @@ export class MapHealthComponent implements OnInit {
     const colhrLog = 'LatestLog' + hr.toString();
     const currDate = new Date();
 
-    const currHr: number = currDate.getHours();
+    const currHr = parseInt(this.MJS.tz('Asia/Thimphu').format('H'), 0);
 
     if (currDate.getFullYear() === this.SelectedDate.getFullYear()
       && currDate.getMonth() === this.SelectedDate.getMonth() &&  currDate.getDay() === this.SelectedDate.getDay()) {
@@ -203,7 +206,7 @@ export class MapHealthComponent implements OnInit {
   }
 
   returnIntPrct(intensitylevel: number, hr: number) {
-    const currHr: number =  new Date().getHours();
+    const currHr: number = parseInt(this.MJS.tz('Asia/Thimphu').format('H'), 0);
     let currMinutes: number  = (this.CurrentState === true && hr === currHr ? new Date().getMinutes() : 60);
     currMinutes = currMinutes * intensitylevel;   // times the value by 6 since every 10 secs there is 6 records
 
@@ -213,7 +216,7 @@ export class MapHealthComponent implements OnInit {
   getStationMarkerStatus(updateCount: number) {
 
     let stationStat;
-    const currHr: number = new Date().getHours();
+    const currHr: number = parseInt(this.MJS.tz('Asia/Thimphu').format('H'), 0);
 
     switch (true) {
       // tslint:disable-next-line: triple-equals
@@ -302,7 +305,7 @@ export class MapHealthComponent implements OnInit {
   startAutoRefreshData() {
     // Get Data every 60 secs
     this.intervalId = setInterval (() => {
-      const colUpdate = 'UpdateCount' + new Date().getHours().toString();
+      const colUpdate = 'UpdateCount' + this.MJS.tz('Asia/Thimphu').format('H').toString();
 
       this.stationService.getStationsHrData()
         .subscribe(response => {
