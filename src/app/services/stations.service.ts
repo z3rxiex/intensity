@@ -25,8 +25,8 @@ constructor(private http: HttpClient) { }
   getStationsData(currDate: any) {
     return this.http.get(this.urlStationData + '?selected_date=' + currDate);
   }
-  getStationsHrData() {
-    return this.http.get(this.urlStationHrData);
+  getStationsHrData(hr: number) {
+    return this.http.get(this.urlStationHrData + '?selected_hr=' + hr);
   }
 
   getStationDetials(stationId: string) {

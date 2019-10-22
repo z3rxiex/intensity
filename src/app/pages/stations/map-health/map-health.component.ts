@@ -42,7 +42,7 @@ export class MapHealthComponent implements OnInit {
   // Public
   stationsData: any;
   colsCount = 24;
-
+  CurrHr: number = parseInt(this.MJS.tz('Asia/Bangkok').format('H'), 0);
   NewSelectedDate = this.FormatedDate;
 
   constructor(private stationService: StationsService) { }
@@ -85,7 +85,7 @@ export class MapHealthComponent implements OnInit {
           this.stationsData = response;
           this.CurrentState = true;
 
-          const colUpdate = 'UpdateCount' + this.MJS.tz('Asia/Thimphu').format('H').toString();
+          const colUpdate = 'UpdateCount' + this.MJS.tz('Asia/Bangkok').format('H').toString();
 
           // Load Station Marker
           this.stationsData.forEach(station => {
@@ -99,9 +99,6 @@ export class MapHealthComponent implements OnInit {
               'Longitude : ' + station.longitude + '<br>' +
               'Elevation: ' + station.elevation + '<br>';
 
-
-            // const stationMarker = L.marker([station.latitude, station.longitude]).bindPopup(htmlContent + chartContent).addTo(this.map);
-            // const stationMarker = L.marker([station.latitude, station.longitude]).bindPopup(htmlContent).addTo(this.map);
             const stationMarker = L.marker([station.latitude, station.longitude],
               {icon: L.AwesomeMarkers.icon({icon: 'home', prefix: 'fa', markerColor: this.getStationMarkerStatus(station[colUpdate]) })})
               .bindPopup(htmlContent).addTo(this.map);
@@ -142,36 +139,23 @@ export class MapHealthComponent implements OnInit {
     return colStr;
   }
 
-  getStatus(index: number, hr: number) {
-    /*return 0 - with data
-             1 - no Data
-             2 - not within hour
-    */
-    if (typeof(this.stationsData) === 'undefined') {
-      return false;
-    }
-
-    const colHr = 'HR' + hr.toString() + '_status';
-    const colhrLog = 'LatestLog' + hr.toString();
+  getStatus(hr: number) {
     const currDate = new Date();
-
-    const currHr = parseInt(this.MJS.tz('Asia/Thimphu').format('H'), 0);
 
     if (currDate.getFullYear() === this.SelectedDate.getFullYear()
       && currDate.getMonth() === this.SelectedDate.getMonth() &&  currDate.getDay() === this.SelectedDate.getDay()) {
-
-      if (hr > currHr) {
-        this.stationsData[index][colHr] = 2; // so display as outline
+      if (hr > this.CurrHr) {
+        return 1; // so display as outline
       }
-
-      if (typeof(this.stationsHrData) !== 'undefined' && hr === currHr) {
-        this.stationsData[index][colHr] = this.stationsHrData[index][colHr];
-        this.stationsData[index][colhrLog]  = this.stationsHrData[index][colhrLog];
-      }
-
     }
-    return this.stationsData[index][colHr];
+    return 0;
   }
+
+  /*
+  getBStatus(hr: number) {
+    return this.CurrHr;
+  }
+  */
 
   getBtnStatus(index: number, hr: number) {
 
@@ -201,13 +185,10 @@ export class MapHealthComponent implements OnInit {
     }
 
     return btnStat;
-   // return curr_hr;
-
   }
 
   returnIntPrct(intensitylevel: number, hr: number) {
-    const currHr: number = parseInt(this.MJS.tz('Asia/Thimphu').format('H'), 0);
-    let currMinutes: number  = (this.CurrentState === true && hr === currHr ? new Date().getMinutes() : 60);
+    let currMinutes: number  = (this.CurrentState === true && hr === this.CurrHr ? new Date().getMinutes() - 1 : 60);
     currMinutes = currMinutes * intensitylevel;   // times the value by 6 since every 10 secs there is 6 records
 
     return currMinutes;
@@ -216,18 +197,18 @@ export class MapHealthComponent implements OnInit {
   getStationMarkerStatus(updateCount: number) {
 
     let stationStat;
-    const currHr: number = parseInt(this.MJS.tz('Asia/Thimphu').format('H'), 0);
+    //const currHr: number = parseInt(this.MJS.tz('Asia/Bangkok').format('H'), 0);
 
     switch (true) {
       // tslint:disable-next-line: triple-equals
       case updateCount == intPercentage.intRed:
         stationStat = stationMarkerStatus.stationRed;
         break;
-      case (updateCount > intPercentage.intRed && updateCount < this.returnIntPrct(intPercentage.intGreen, currHr)) :
+      case (updateCount > intPercentage.intRed && updateCount < this.returnIntPrct(intPercentage.intGreen, this.CurrHr)) :
         stationStat = stationMarkerStatus.stationOrange;
         break;
-      case (updateCount >= this.returnIntPrct(intPercentage.intGreen, currHr) &&
-        updateCount < this.returnIntPrct(intPercentage.intOk, currHr)) :
+      case (updateCount >= this.returnIntPrct(intPercentage.intGreen, this.CurrHr) &&
+        updateCount < this.returnIntPrct(intPercentage.intOk, this.CurrHr)) :
 
         stationStat  = stationMarkerStatus.stationGreen;
         break;
@@ -237,18 +218,6 @@ export class MapHealthComponent implements OnInit {
     }
 
     return stationStat;
-  }
-
-  getUpdateCount(index: number, hr: number) {
-
-    if (typeof(this.stationsData) === 'undefined') {
-      return false;
-    }
-
-    const colUpdate = 'UpdateCount' + hr.toString();
-    const colHr = 'HR' + hr.toString() + '_status';
-
-    return  (this.stationsData[index][colHr] === 2 ? '' : this.stationsData[index][colUpdate]) ;
   }
 
   showData() {
@@ -303,11 +272,34 @@ export class MapHealthComponent implements OnInit {
   }
 
   startAutoRefreshData() {
-    // Get Data every 60 secs
-    this.intervalId = setInterval (() => {
-      const colUpdate = 'UpdateCount' + this.MJS.tz('Asia/Thimphu').format('H').toString();
 
-      this.stationService.getStationsHrData()
+    this.intervalId = setInterval (() => {
+      // const Hr: number = parseInt(this.MJS.tz('Asia/Bangkok').format('H'), 0);
+      const Hr: number = new Date().getHours();
+      const colUpdate = 'UpdateCount' + Hr.toString();
+
+      if (Hr !== this.CurrHr && Hr !== 0) {
+        // update previous hour
+        this.stationService.getStationsHrData(this.CurrHr)
+        .subscribe(response => {
+            this.stationsHrData = response;
+            this.stationsHrData.forEach((station, index) => {
+              this.stationsData[index][colUpdate] = station[colUpdate];
+            });
+        });
+      }
+
+      if (Hr !== this.CurrHr && Hr === 0) {  // Next Day, Update date
+          const NewDate = new Date();
+          this.NewSelectedDate = NewDate.getFullYear().toString() + '-' + (NewDate.getMonth() + 1).toString() +
+            '-' + NewDate.getDate().toString();
+
+          this.showData();   // Get latest data
+      }
+
+      this.CurrHr = Hr;   // Now the current hour
+
+      this.stationService.getStationsHrData(this.CurrHr)
         .subscribe(response => {
             this.stationsHrData = response;
 
@@ -335,25 +327,14 @@ export class MapHealthComponent implements OnInit {
 
             });
 
+
         }
       );
+      // console.log(this.stationsHrData);
+      // console.log('refresh');
+      // console.log(this.CurrHr);
 
-    }, 5000);
+    }, 15000);
   }
-
-  onTest() {
-    // this.markers[0].setPopupContent('Test');
-  }
-
-  getReturnCount(index: number, hr: number) {
-
-    // const colUpdate = 'UpdateCount' + hr.toString();
-    // const colUpdateCount = parseInt(this.stationsData[index][colUpdate], 0);  // times default 6
-
-    // return colUpdateCount;
-    return '';
-
-  }
-
 
 }
