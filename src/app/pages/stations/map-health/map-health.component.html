@@ -35,18 +35,26 @@
                     </div>
                 </div>
                 <div class="col-lg-7 ">
-                    <table class="table table-bordered" style="width:100%;font-size:12px;line-height:25px;">
+                    <table class="table table-bordered" style="width:100%;font-size:12px;line-height:20px;">
                         <thead>
                             <tr>
+                                <th scope="col" colspan=25 class="text-center">{{ CurrTime }}</th>
+                            </tr>
+                            <tr>
                                 <th scope="col">&nbsp;</th>
-                                <th *ngFor="let item of returnColumn(colsCount); let i = index;">{{ convertStrCol(i) }}</th>
+                                <th *ngFor="let item of returnColumn(colsCount); let i = index;" 
+                                    class="p-0 text-center align-middle">
+                                    {{ convertStrCol(i) }}
+                                </th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr *ngFor="let station of stationsData; let s = index;">
-                                <td class="p-1">{{ station.name }}</td>
-                                <td *ngFor="let item of returnColumn(colsCount); let h = index;" class="p-1">
-                                    <button type="button" class="btn btn-25 btn-sm" [ngClass]="getStatus(h) == 1 ? 'btn-outline-dark' : getBtnStatus(s, h)"><span class='update-count'>&nbsp;</span></button>
+                                <td class="p-1 font-weight-bold">{{ station.name }}</td>
+                                <td *ngFor="let item of returnColumn(colsCount); let h = index;" class="p-0 text-center align-middle">
+                                    <button type="button" class="btn btn-25 btn-sm" title="Data Count: {{ GetUpdateCount(s,h) }}"
+                                    [ngClass]="getStatus(h) == 1 ? 'btn-outline-dark' : getBtnStatus(s, h)">
+                                    </button>
                                 </td>
                             </tr>
                         </tbody>

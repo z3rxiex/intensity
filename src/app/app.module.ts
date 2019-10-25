@@ -22,8 +22,7 @@ import { AddStationComponent } from './pages/stations/add-station/add-station.co
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { ToastrModule } from 'ngx-toastr';
-
-
+import { ChartsModule } from 'ng2-charts';
 
 @NgModule({
   declarations: [
@@ -46,7 +45,8 @@ import { ToastrModule } from 'ngx-toastr';
     FormsModule,
     ReactiveFormsModule,
     DataTablesModule,
-    ToastrModule.forRoot()
+    ToastrModule.forRoot(),
+    ChartsModule
   ],
   providers: [StationsService],
   bootstrap: [AppComponent]

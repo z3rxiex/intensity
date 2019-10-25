@@ -21,6 +21,8 @@ L.Marker.prototype.options.icon = DefaultIcon;
   styleUrls: ['./map-health.component.css']
 })
 export class MapHealthComponent implements OnInit {
+
+  constructor(private stationService: StationsService) { }
   // Private
   private stationsHrData: any;
   private map: any;
@@ -36,16 +38,26 @@ export class MapHealthComponent implements OnInit {
   private intervalId: any;
   private CurrentState = false;
 
-  private MJS = moment(); // creating obj.
-
-
   // Public
   stationsData: any;
   colsCount = 24;
-  CurrHr: number = parseInt(this.MJS.tz('Asia/Bangkok').format('H'), 0);
+  CurrHr: number = parseInt(moment().tz('Asia/Thimphu').format('H'), 0);
+  PrevHr: number = this.CurrHr;
   NewSelectedDate = this.FormatedDate;
+  CurrTime =  moment().tz('Asia/Thimphu').format('MMMM Do YYYY, h:mm:ss a').toString();
 
-  constructor(private stationService: StationsService) { }
+  public barChartOptions = {
+    scaleShowVerticalLines: false,
+    responsive: true
+  };
+  public barChartLabels = ['2006', '2007', '2008', '2009', '2010', '2011', '2012'];
+  public barChartType = 'bar';
+  public barChartLegend = true;
+  public barChartData = [
+    {data: [65, 59, 80, 81, 56, 55, 40], label: 'Series A'},
+    {data: [28, 48, 40, 19, 86, 27, 90], label: 'Series B'}
+  ];
+
 
   ngOnInit() {
     /* Initilize Map */
@@ -80,20 +92,24 @@ export class MapHealthComponent implements OnInit {
 
     L.control.layers(baselayers).addTo(this.map);
 
+
+
     this.stationService.getStationsData(this.FormatedDate)
       .subscribe(response => {
           this.stationsData = response;
           this.CurrentState = true;
-
-          const colUpdate = 'UpdateCount' + this.MJS.tz('Asia/Bangkok').format('H').toString();
+          const colUpdate = 'UpdateCount' + moment().tz('Asia/Thimphu').format('H').toString();
 
           // Load Station Marker
           this.stationsData.forEach(station => {
 
             const htmlContent = '<span class="font-weight-bold">Code: ' + station.code + '</span><br>' +
               '<span class="font-weight-bold">Name: ' + station.name + '</span><br><br>' +
-              'Status : Active' + '<br>' +
-              'Last Update: ' + (station.LatestLog === '' ? 'No Data' : this.FormatedDate + ' ' + station.LatestLog) + '<br><br>' +
+              // tslint:disable-next-line: max-line-length
+              // tslint:disable-next-line: triple-equals
+              'Status : ' +  (station[colUpdate] == 0 ? '<span class="badge badge-danger">Inactive</span>' :
+                '<span class="badge badge-primary">Active</span>') + '<br>' +
+              'Last Update: ' + (station.LatestLog === '' ? '' : this.FormatedDate + ' ' + station.LatestLog) + '<br><br>' +
               'Location : ' + station.location + '<br>' +
               'Latitude : ' + station.latitude + '<br>' +
               'Longitude : ' + station.longitude + '<br>' +
@@ -110,7 +126,8 @@ export class MapHealthComponent implements OnInit {
         }
       );
 
-    this.startAutoRefreshData();  // Start auto refresh
+    // this.startAutoRefreshData();  // Start auto refresh
+    this.RefreshEverySec();
 
       // Datepicker jquery
     // tslint:disable-next-line: only-arrow-functions
@@ -126,6 +143,7 @@ export class MapHealthComponent implements OnInit {
       $('#inputDate').change(function() {
         $('#inputDate').trigger('click');
       });
+
     });
   }
 
@@ -156,6 +174,12 @@ export class MapHealthComponent implements OnInit {
     return this.CurrHr;
   }
   */
+
+  GetUpdateCount(index: number, hr: number) {
+    const colUpdate = 'UpdateCount' + hr.toString();
+
+    return this.stationsData[index][colUpdate];
+  }
 
   getBtnStatus(index: number, hr: number) {
 
@@ -197,7 +221,7 @@ export class MapHealthComponent implements OnInit {
   getStationMarkerStatus(updateCount: number) {
 
     let stationStat;
-    //const currHr: number = parseInt(this.MJS.tz('Asia/Bangkok').format('H'), 0);
+    // const currHr: number = parseInt(moment().tz('Asia/Thimphu').format('H'), 0);
 
     switch (true) {
       // tslint:disable-next-line: triple-equals
@@ -223,6 +247,9 @@ export class MapHealthComponent implements OnInit {
   showData() {
     const newDate = this.NewSelectedDate.split('-');
     const currDate = new Date();
+
+    this.CurrHr = parseInt(moment().tz('Asia/Thimphu').format('H'), 0);   // get current hour
+    const colUpdate = 'UpdateCount' + this.CurrHr.toString();
 
     this.SelectedDate = new Date(newDate[0].toString() + '-' + newDate[1].toString() + '-' + newDate[2].toString());
 
@@ -253,7 +280,9 @@ export class MapHealthComponent implements OnInit {
         this.stationsData.forEach((station, index) => {
           const htmlContent = '<span class="font-weight-bold">Code: ' + station.code + '</span><br>' +
             '<span class="font-weight-bold">Name: ' + station.name + '</span><br><br>' +
-            'Status : Active' + '<br>' +
+            // tslint:disable-next-line: triple-equals
+            'Status : ' +  (station[colUpdate] == 0 ? '<span class="badge badge-danger">Inactive</span>' :
+              '<span class="badge badge-primary">Active</span>') + '<br>' +
             'Last Update: ' + this.FormatedDate + ' ' + station.LatestLog + '<br><br>' +
             'Location : ' + station.location + '<br>' +
             'Latitude : ' + station.latitude + '<br>' +
@@ -271,11 +300,18 @@ export class MapHealthComponent implements OnInit {
     this.NewSelectedDate = newDate;
   }
 
+  RefreshEverySec() {
+      // tslint:disable-next-line: no-unused-expression
+    setInterval(() => {
+      this.CurrTime = moment().tz('Asia/Thimphu').format('MMMM Do YYYY, h:mm:ss a').toString();
+    }, 1000);
+  }
+
   startAutoRefreshData() {
 
     this.intervalId = setInterval (() => {
-      // const Hr: number = parseInt(this.MJS.tz('Asia/Bangkok').format('H'), 0);
-      const Hr: number = new Date().getHours();
+      const Hr: number = parseInt(moment().tz('Asia/Thimphu').format('H'), 0);
+      // const Hr: number = new Date().getHours();
       const colUpdate = 'UpdateCount' + Hr.toString();
 
       if (Hr !== this.CurrHr && Hr !== 0) {
@@ -287,6 +323,8 @@ export class MapHealthComponent implements OnInit {
               this.stationsData[index][colUpdate] = station[colUpdate];
             });
         });
+        this.CurrHr = Hr;   // Now the current hour
+
       }
 
       if (Hr !== this.CurrHr && Hr === 0) {  // Next Day, Update date
@@ -297,8 +335,6 @@ export class MapHealthComponent implements OnInit {
           this.showData();   // Get latest data
       }
 
-      this.CurrHr = Hr;   // Now the current hour
-
       this.stationService.getStationsHrData(this.CurrHr)
         .subscribe(response => {
             this.stationsHrData = response;
@@ -307,7 +343,9 @@ export class MapHealthComponent implements OnInit {
             this.stationsHrData.forEach((station, index) => {
               const htmlContent = '<span class="font-weight-bold">Code: ' + station.code + '</span><br>' +
                 '<span class="font-weight-bold">Name: ' + station.name + '</span><br><br>' +
-                'Status : Active' + '<br>' +
+                // tslint:disable-next-line: triple-equals
+                'Status : ' +  (station[colUpdate] == 0 ? '<span class="badge badge-danger">Inactive</span>' :
+                  '<span class="badge badge-primary">Active</span>') + '<br>' +
                 'Last Update: ' + (station.LatestLog === '' ? this.stationsData[index].LatestLog :
                   this.FormatedDate + ' ' + station.LatestLog) + '<br><br>' +
                 'Location : ' + station.location + '<br>' +
@@ -336,5 +374,7 @@ export class MapHealthComponent implements OnInit {
 
     }, 15000);
   }
+
+
 
 }

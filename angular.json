@@ -36,9 +36,9 @@
               "src/assets/custom/Leaflet.awesome-markers/dist/leaflet.awesome-markers.css"
               
             ],
-            "scripts": [
-              "node_modules/leaflet/dist/leaflet.js",
+            "scripts": [  
               "node_modules/jquery/dist/jquery.min.js",
+              "node_modules/leaflet/dist/leaflet.js",
               "node_modules/datatables.net/js/jquery.dataTables.js",
               "src/assets/custom/jquery-ui/jquery-ui.min.js",
               "src/assets/custom/Leaflet.awesome-markers/dist/leaflet.awesome-markers.min.js"
